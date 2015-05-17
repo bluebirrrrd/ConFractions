@@ -115,7 +115,7 @@ public class RLnumber {
     }
 
     public static RLnumber sort(RLnumber number1, RLnumber number2) {
-        RLnumber result = null;
+        RLnumber result;
         int[] resultingTail = new int[2*MAX_LENGTH];
         Integer[] tempTail = new Integer[2*MAX_LENGTH];
         int[] tail1 = number1.getTail();
@@ -174,7 +174,7 @@ public class RLnumber {
     }
 
     public RLnumber sum(RLnumber number1, RLnumber number2) {
-        RLnumber result = null;
+        RLnumber result;
 
         if ((!number1.checkForZero()) && (!number2.checkForZero())) {
             int sign = number1.isGreaterThan(number2) ? number1.getSign() : number2.getSign();
@@ -249,4 +249,27 @@ public class RLnumber {
         return result;
     }
 
+    public RLnumber multiply(RLnumber number1, RLnumber number2) {
+        RLnumber result;
+        int signOfResult = number1.getSign() * number2.getSign();
+        LinkedList<Integer> partialProductList = new LinkedList<>();
+        int[] tail1 = number1.getTail();
+        int[] tail2 = number2.getTail();
+        int[] partialProductArray;
+        for (int i = 0; i < number1.getLength(); i++) {
+            for (int j = 0; j < number2.getLength(); j++) {
+                int temp = tail1[i] + tail2[j];
+                partialProductList.add(temp);
+            }
+        }
+
+        partialProductArray = new int[partialProductList.size()];
+        result = new RLnumber(signOfResult, 1, partialProductArray);
+        result.sort();
+        result.mergeSimilar();
+        result.countLength();
+
+        return result;
+
+    }
 }
