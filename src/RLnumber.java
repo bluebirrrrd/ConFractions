@@ -5,20 +5,21 @@ public class RLnumber {
 
     private static final int K_MAX = 53;
     private static final int K_MIN = -11;
+    private static final int MAX_LENGTH = 8;
     private int sign;
     private int length;
-    private LinkedList<Integer> tail;
+    private int[] tail;
 
     public RLnumber() {
         sign = 0;
         length = 0;
-        tail = new LinkedList<>();
+        tail = new int[] {0};
     }
 
     public RLnumber(int sign, int length, int[] tail) {
         this.sign = sign;
         this.length = length;
-        for (int i : tail) this.tail.add(i);
+        this.tail = tail.clone();
     }
 
     /**
@@ -31,8 +32,8 @@ public class RLnumber {
     public RLnumber(int sign, int length, List<Integer> tail) {
         this.sign = sign;
         this.length = length;
-        for (Integer i : tail) {
-            this.tail.add(i);
+        for (int i = 0; i<tail.size(); i++) {
+            this.tail[i] = (int)tail.get(i);
         }
     }
 
@@ -52,21 +53,21 @@ public class RLnumber {
         this.length = length;
     }
 
-    public LinkedList<Integer> getTail() {
+    public int[] getTail() {
         return tail;
     }
-//    TODO create a setTail method that converts int[] to LinkedList<Integer>
-    public void setTail(LinkedList<Integer> tail) {
+
+    public void setTail(int[] tail) {
         this.tail = tail;
     }
 
     public void countLength() {
-        length = tail.size();
+        length = tail.length;
     }
 
     public static RLnumber toRL(double number) {
         RLnumber result = null;
-        List<Integer> tail = new LinkedList<>();
+        int[] tail = new int[MAX_LENGTH];
         /*
         double intPart = Math.floor(number);
         double fraction = number - intPart;
@@ -74,16 +75,21 @@ public class RLnumber {
         int sign = (number >= 0) ? 0 : 1;
         number = Math.abs(number);
         for (int k = K_MAX; k > K_MIN; k--) {
+            int index = 0;
             double number1 = number;
             number1 = number1 - Math.scalb(1,k);
             if (number1 < 0) {
                 number1 = number;
             } else {
-                tail.add(k);
+                tail[index] = k;
+                index++;
             }
+            if (index > MAX_LENGTH) break;
         }
 
-        result = new RLnumber(sign, tail.size(), tail);
+        result = new RLnumber(sign, tail.length, tail);
         return result;
     }
+
+
 }
