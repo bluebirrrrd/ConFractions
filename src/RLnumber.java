@@ -162,11 +162,11 @@ public class RLnumber {
     /* TODO check whether the method is working right */
     public void mergeSimilar() {
         this.sort();
-        for (int i = 0; i < tail.length - 1; i++) {
-            if (tail[i] == tail[i+1]) {
-                tail[i] = tail[i] + 1;
-                tail[i+1] = EMPTY_VALUE;
-                i++;
+        for (int i = tail.length; i > 0; i--) {
+            if (tail[i] == tail[i-1]) {
+                tail[i-1] = tail[i-1] + 1;
+                tail[i] = EMPTY_VALUE;
+                i--;
             }
             if (tail[i] == EMPTY_VALUE) break;
         }
