@@ -6,9 +6,9 @@ import java.util.List;
 public class RLnumber {
 
     private static final int K_MAX = 53;
-    private static final int K_MIN = -11;
+    private static final int K_MIN = -17;
     private static final int MAX_LENGTH = 8;
-    private static final int EMPTY_VALUE = -12; //cells that are equal to this value should be taken as empty
+    private static final int EMPTY_VALUE = -18; //cells that are equal to this value should be taken as empty
     private int sign;
     private int length;
     private int[] tail;
@@ -18,7 +18,7 @@ public class RLnumber {
         length = 0;
         tail = new int[MAX_LENGTH];
         for (int i = 0; i<MAX_LENGTH; i++) {
-            tail[i] = -12;
+            tail[i] = -EMPTY_VALUE;
         }
     }
 
@@ -66,7 +66,7 @@ public class RLnumber {
     public void setTail(int[] tail) {
         this.tail = tail;
     }
-    /*  TODO write the right counter of length (it should skip -12 in content of tail)*/
+    /*  TODO write the right counter of length (it should skip -18 in content of tail)*/
     public void countLength() {
         length = tail.length;
     }
@@ -105,7 +105,7 @@ public class RLnumber {
         int[] tail2 = number2.getTail();
 
         for (int i = 0; i < resultingTail.length; i++) {
-            resultingTail[i] = -12;
+            resultingTail[i] = EMPTY_VALUE;
         }
 
         System.arraycopy(tail1, 0, resultingTail, 0, tail1.length);
@@ -126,5 +126,15 @@ public class RLnumber {
         return result;
     }
 
-
+    /* TODO check whether the method is working right */
+    public void mergeSimilar() {
+        for (int i = 0; i < tail.length - 1; i++) {
+            if (tail[i] == tail[i+1]) {
+                tail[i+1] = EMPTY_VALUE;
+                i++;
+            }
+            if (tail[i] == EMPTY_VALUE) break;
+        }
+        this.countLength();
+    }
 }
