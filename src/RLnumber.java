@@ -173,7 +173,7 @@ public class RLnumber {
         this.countLength();
     }
 
-    public RLnumber sum(RLnumber number1, RLnumber number2) {
+    public static RLnumber sum(RLnumber number1, RLnumber number2) {
         RLnumber result;
 
         if ((!number1.checkForZero()) && (!number2.checkForZero())) {
@@ -191,7 +191,7 @@ public class RLnumber {
     }
 
 
-    public RLnumber substract(RLnumber number1, RLnumber number2) {
+    public static RLnumber substract(RLnumber number1, RLnumber number2) {
 
         RLnumber greaterNumber;
         RLnumber smallerNumber;
@@ -249,7 +249,7 @@ public class RLnumber {
         return result;
     }
 
-    public RLnumber multiply(RLnumber number1, RLnumber number2) {
+    public static RLnumber multiply(RLnumber number1, RLnumber number2) {
         RLnumber result;
         int signOfResult = number1.getSign() * number2.getSign();
         LinkedList<Integer> partialProductList = new LinkedList<>();
@@ -272,4 +272,22 @@ public class RLnumber {
         return result;
 
     }
+
+    //TODO add skipping EMPTY_VALUEs in all operations
+    /*public static RLnumber divide(RLnumber dividend, RLnumber divisor) {
+        if (divisor.checkForZero()) {
+            return null;
+        } else {
+            int[] tempTail = dividend.getTail();
+            int divisorHeadBit = divisor.getTail()[0];
+            int signOfResult = dividend.getSign() * divisor.getSign();
+            int[] tailOfResult = new int[MAX_LENGTH];
+            for (int i = 0; i < MAX_LENGTH; i++) {
+                tailOfResult[i] = tempTail[0] - divisorHeadBit;
+                RLnumber temp = new RLnumber(signOfResult,i+1,tailOfResult);
+                RLnumber product = multiply(temp,divisor);
+            }
+        }
+        return null;
+    }*/
 }
