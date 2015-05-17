@@ -125,9 +125,24 @@ public class RLnumber {
         result = new RLnumber(number1.getSign(),tempTail.length, resultingTail);
         return result;
     }
+    /* TODO write a sort() method for ONE tail */
+
+    public void sort() {
+        Integer[] tempTail = new Integer[tail.length];
+        for (int i = 0; i < tail.length; i++) {
+            tempTail[i] = tail[i];
+        }
+
+        Arrays.sort(tempTail, Collections.reverseOrder());
+
+        for (int k = 0; k < tempTail.length; k++) {
+            tail[k] = (int)tempTail[k];
+        }
+    }
 
     /* TODO check whether the method is working right */
     public void mergeSimilar() {
+        // this.sort()
         for (int i = 0; i < tail.length - 1; i++) {
             if (tail[i] == tail[i+1]) {
                 tail[i+1] = EMPTY_VALUE;
