@@ -274,20 +274,31 @@ public class RLnumber {
     }
 
     //TODO add skipping EMPTY_VALUEs in all operations
-    /*public static RLnumber divide(RLnumber dividend, RLnumber divisor) {
+    public static RLnumber divide(RLnumber dividend, RLnumber divisor) {
+        RLnumber result;
         if (divisor.checkForZero()) {
-            return null;
+            result = null;
         } else {
-            int[] tempTail = dividend.getTail();
+            RLnumber tempNumber = dividend;
             int divisorHeadBit = divisor.getTail()[0];
             int signOfResult = dividend.getSign() * divisor.getSign();
             int[] tailOfResult = new int[MAX_LENGTH];
             for (int i = 0; i < MAX_LENGTH; i++) {
-                tailOfResult[i] = tempTail[0] - divisorHeadBit;
+                tailOfResult[i] = tempNumber.getTail()[0] - divisorHeadBit;
                 RLnumber temp = new RLnumber(signOfResult,i+1,tailOfResult);
                 RLnumber product = multiply(temp,divisor);
+                RLnumber remainder;
+
+                if (product.isGreaterThan(tempNumber)) {
+                    tailOfResult[i] -= 1;
+                    product = multiply(temp, divisor);
+                }
+
+                remainder = substract(tempNumber, product);
+                tempNumber = remainder;
             }
+            result = new RLnumber(signOfResult,MAX_LENGTH,tailOfResult);
         }
-        return null;
-    }*/
+        return result;
+    }
 }
