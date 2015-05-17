@@ -71,6 +71,9 @@ public class RLnumber {
         length = tail.length;
     }
 
+    public boolean checkForZero() {
+        return (length == 0);
+    }
     public static RLnumber toRL(double number) {
         RLnumber result = null;
         int[] tail = new int[MAX_LENGTH];
@@ -108,8 +111,8 @@ public class RLnumber {
             resultingTail[i] = EMPTY_VALUE;
         }
 
-        System.arraycopy(tail1, 0, resultingTail, 0, tail1.length);
-        System.arraycopy(tail2, 0, resultingTail, tail1.length, tail2.length);
+        System.arraycopy(tail1, 0, resultingTail, 0, number1.getLength());
+        System.arraycopy(tail2, 0, resultingTail, number1.getLength(), number2.getLength());
 
         /* copying content of resultingTail to tempTail */
         for (int j = 0; j < tempTail.length; j++) {
@@ -122,10 +125,14 @@ public class RLnumber {
             resultingTail[k] = (int)tempTail[k];
         }
 
-        result = new RLnumber(number1.getSign(),tempTail.length, resultingTail);
+        int[] resultingTail1 = new int[MAX_LENGTH];
+        for (int l = 0; l < resultingTail1.length; l++) {
+            resultingTail1[l] = resultingTail[l];
+        }
+
+        result = new RLnumber(number1.getSign(), resultingTail1.length, resultingTail1);
         return result;
     }
-    /* TODO write a sort() method for ONE tail */
 
     public void sort() {
         Integer[] tempTail = new Integer[tail.length];
@@ -142,7 +149,7 @@ public class RLnumber {
 
     /* TODO check whether the method is working right */
     public void mergeSimilar() {
-        // this.sort()
+        this.sort();
         for (int i = 0; i < tail.length - 1; i++) {
             if (tail[i] == tail[i+1]) {
                 tail[i+1] = EMPTY_VALUE;
@@ -152,4 +159,21 @@ public class RLnumber {
         }
         this.countLength();
     }
+
+    public RLnumber sum(RLnumber number1, RLnumber number2) {
+        RLnumber result = null;
+        if ((!number1.checkForZero()) && (!number2.checkForZero())) {
+            result = sort(number1, number2);
+            result.mergeSimilar();
+        } else {
+            if (number1.checkForZero()) {
+                result = number2;
+            } else {
+                result = number1;
+            }
+        }
+        return result;
+    }
+
+
 }
