@@ -1,3 +1,5 @@
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -6,6 +8,7 @@ public class RLnumber {
     private static final int K_MAX = 53;
     private static final int K_MIN = -11;
     private static final int MAX_LENGTH = 8;
+    private static final int EMPTY_VALUE = -12; //cells that are equal to this value should be taken as empty
     private int sign;
     private int length;
     private int[] tail;
@@ -13,7 +16,10 @@ public class RLnumber {
     public RLnumber() {
         sign = 0;
         length = 0;
-        tail = new int[] {0};
+        tail = new int[MAX_LENGTH];
+        for (int i = 0; i<MAX_LENGTH; i++) {
+            tail[i] = -12;
+        }
     }
 
     public RLnumber(int sign, int length, int[] tail) {
@@ -60,7 +66,7 @@ public class RLnumber {
     public void setTail(int[] tail) {
         this.tail = tail;
     }
-
+    /*  TODO write the right counter of length (it should skip -12 in content of tail)*/
     public void countLength() {
         length = tail.length;
     }
@@ -88,6 +94,35 @@ public class RLnumber {
         }
 
         result = new RLnumber(sign, tail.length, tail);
+        return result;
+    }
+
+    public static RLnumber sort(RLnumber number1, RLnumber number2) {
+        RLnumber result = null;
+        int[] resultingTail = new int[2*MAX_LENGTH];
+        Integer[] tempTail = new Integer[2*MAX_LENGTH];
+        int[] tail1 = number1.getTail();
+        int[] tail2 = number2.getTail();
+
+        for (int i = 0; i < resultingTail.length; i++) {
+            resultingTail[i] = -12;
+        }
+
+        System.arraycopy(tail1, 0, resultingTail, 0, tail1.length);
+        System.arraycopy(tail2, 0, resultingTail, tail1.length, tail2.length);
+
+        /* copying content of resultingTail to tempTail */
+        for (int j = 0; j < tempTail.length; j++) {
+            tempTail[j] = resultingTail[j];
+        }
+
+        Arrays.sort(tempTail, Collections.reverseOrder());
+
+        for (int k = 0; k < tempTail.length; k++) {
+            resultingTail[k] = (int)tempTail[k];
+        }
+
+        result = new RLnumber(number1.getSign(),tempTail.length, resultingTail);
         return result;
     }
 
