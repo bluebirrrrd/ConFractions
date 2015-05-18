@@ -209,6 +209,7 @@ public class RLnumber {
         return result;
     }
 
+    /*works right */
     public void sort() {
         Integer[] tempTail = new Integer[tail.length];
         for (int i = 0; i < tail.length; i++) {
@@ -241,6 +242,7 @@ public class RLnumber {
         this.countLength();
     }
 
+    /*works right */
     public static RLnumber sum(RLnumber number1, RLnumber number2) {
         RLnumber result;
 
@@ -257,67 +259,82 @@ public class RLnumber {
         return result;
     }
 
-
+    /* works right */
     public static RLnumber substract(RLnumber number1, RLnumber number2) {
-        System.out.println(number1.toString() + " " + number2.toString());
 
-        RLnumber greaterNumber;
-        RLnumber smallerNumber;
-        if (number1.isGreaterThan(number2)) {
-            greaterNumber = number1;
-            smallerNumber = number2;
-        } else {
-            greaterNumber = number2;
-            smallerNumber = number1;
-        }
 
-        int[] tail1 = greaterNumber.getTail();
-        int[] tail2 = smallerNumber.getTail();
         RLnumber result;
 
-        for (int i = 0; i < greaterNumber.getLength(); i++) {
-            for (int k = 0; k < smallerNumber.getLength(); k++)
-            if (tail1[i] == tail2[k]) {
-                tail1[i] = EMPTY_VALUE;
-                tail2[k] = EMPTY_VALUE;
-                break;
+        if (number1.checkForZero()) {
+            result = number2;
+            result.setSign(1);
+        } else if (number2.checkForZero()) {
+            result = number1;
+        } else {
+
+            int resultSign;
+            RLnumber greaterNumber;
+            RLnumber smallerNumber;
+            if (number1.isGreaterThan(number2)) {
+                greaterNumber = number1;
+                smallerNumber = number2;
+                resultSign = number1.getSign();
+            } else {
+                greaterNumber = number2;
+                smallerNumber = number1;
+                resultSign = 1;
+            }
+
+            System.out.println("The greater number is " + greaterNumber);
+            System.out.println("The smaller number is " + smallerNumber);
+
+            int[] tail1 = greaterNumber.getTail();
+            int[] tail2 = smallerNumber.getTail();
+
+
+            for (int i = 0; i < greaterNumber.getLength(); i++) {
+                for (int k = 0; k < smallerNumber.getLength(); k++)
+                    if (tail1[i] == tail2[k]) {
+                        tail1[i] = EMPTY_VALUE;
+                        tail2[k] = EMPTY_VALUE;
+                        break;
+                    }
+            }
+            //setting new tails to our RL numbers
+            greaterNumber.setTail(tail1);
+            smallerNumber.setTail(tail2);
+            //and making them look pretty
+            greaterNumber.sort();
+            smallerNumber.sort();
+            greaterNumber.countLength();
+            smallerNumber.countLength();
+
+            if (smallerNumber.checkForZero()) {
+                result = greaterNumber;
+            } else {
+                tail1 = greaterNumber.getTail();
+                tail2 = greaterNumber.getTail();
+                int greatestBitOf1 = tail1[0];
+                int smallestBitOf2 = tail2[smallerNumber.getLength() - 1];
+                //це List, у якому міститься розклад типу Ni - Nk = N(i-1) N(i-2) ... Nk
+                LinkedList<Integer> noIdeaHowToNameThisList = new LinkedList<>();
+                for (int i = greatestBitOf1 - 1; i >= smallestBitOf2; i--) {
+                    noIdeaHowToNameThisList.add(i);
+                }
+
+                //this array will contain noIdeaHowToNameThisList and tail1 without its greatest bit
+                int[] tempArray = new int[noIdeaHowToNameThisList.size() + greaterNumber.getLength() - 1];
+                for (int i = 0; i < noIdeaHowToNameThisList.size(); i++) {
+                    tempArray[i] = (int) noIdeaHowToNameThisList.get(i);
+                }
+
+                System.arraycopy(tail1, 1, tempArray, noIdeaHowToNameThisList.size(), greaterNumber.getLength() - 1);
+                result = new RLnumber(resultSign, 1, tempArray);
+                result.sort();
+                result.mergeSimilar();
+                result.countLength();
             }
         }
-        //setting new tails to our RL numbers
-        greaterNumber.setTail(tail1);
-        smallerNumber.setTail(tail2);
-        //and making them look pretty
-        greaterNumber.sort();
-        smallerNumber.sort();
-        greaterNumber.countLength();
-        smallerNumber.countLength();
-
-        if (greaterNumber.checkForZero() || smallerNumber.checkForZero()) {
-            return greaterNumber;
-        }
-
-        tail1 = greaterNumber.getTail();
-        tail2 = greaterNumber.getTail();
-        int greatestBitOf1 = tail1[0];
-        int smallestBitOf2 = tail2[smallerNumber.getLength()-1];
-        //це List, у якому міститься розклад типу Ni - Nk = N(i-1) N(i-2) ... Nk
-        LinkedList<Integer> noIdeaHowToNameThisList = new LinkedList<>();
-        for (int i = greatestBitOf1 - 1; i >= smallestBitOf2; i--) {
-            noIdeaHowToNameThisList.add(i);
-        }
-
-        //this array will contain noIdeaHowToNameThisList and tail1 without its greatest bit
-        int[] tempArray = new int[noIdeaHowToNameThisList.size() + greaterNumber.getLength() - 1];
-        for (int i = 0; i < noIdeaHowToNameThisList.size(); i++) {
-            tempArray[i] = (int)noIdeaHowToNameThisList.get(i);
-        }
-
-        System.arraycopy(tail1,1,tempArray,noIdeaHowToNameThisList.size(),greaterNumber.getLength() - 1);
-        result = new RLnumber(greaterNumber.getSign(),1,tempArray);
-        result.sort();
-        result.mergeSimilar();
-        result.countLength();
-
         return result;
     }
 
