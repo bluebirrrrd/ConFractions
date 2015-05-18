@@ -88,12 +88,12 @@ public class Application {
         System.out.print("Enter the value: ");
         value = scan.nextDouble();
 
+        System.out.println(RLnumber.toRL(value).toString());
+        //System.out.println(RLnumber.substract(RLnumber.toRL(5),RLnumber.toRL(2)).toString());
 
-
-
-        System.out.println("sin(" + value + ") = " + sin(value).toString());
+       /* System.out.println("sin(" + value + ") = " + sin(value).toString());
         System.out.println("cos(" + value + ") = " + cos(value).toString());
         System.out.println("tan(" + value + ") = " + tan(value).toString());
-        System.out.println("sec(" + value + ") = " + sec(value).toString());
+        System.out.println("sec(" + value + ") = " + sec(value).toString()); */
     }
 }

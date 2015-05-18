@@ -5,7 +5,7 @@ import java.util.List;
 
 public class RLnumber {
 
-    private static final int K_MAX = 53;
+    private static final int K_MAX = 32;
     private static final int K_MIN = -17;
     private static final int MAX_LENGTH = 8;
     private static final int EMPTY_VALUE = -18; //cells that are equal to this value should be taken as empty
@@ -25,7 +25,10 @@ public class RLnumber {
     public RLnumber(int sign, int length, int[] tail) {
         this.sign = sign;
         this.length = length;
-        this.tail = tail.clone();
+        this.tail = new int[tail.length];
+        for (int i = 0; i < tail.length; i++) {
+            this.tail[i] = tail[i];
+        }
     }
 
     /**
@@ -52,7 +55,7 @@ public class RLnumber {
         result.append(length);
         result.append(".");
         for (int i = 0; i < length; i++) {
-            result.append(i);
+            result.append(tail[i]);
             result.append(".");
         }
 
@@ -92,7 +95,8 @@ public class RLnumber {
         }
     }
 
-    public void cutRL() {
+    private void cutRL() {
+        this.countLength();
         if (length > MAX_LENGTH) {
             int[] newTail = new int[MAX_LENGTH];
             for (int i = 0; i < MAX_LENGTH; i++) {
@@ -100,12 +104,20 @@ public class RLnumber {
             }
             this.setTail(newTail);
             this.countLength();
+        } else if (length < MAX_LENGTH) {
+            this.sort();
+            int[] newTail = new int[length];
+            for (int i = 0; i < length; i++) {
+                newTail[i] = tail[i];
+            }
+            this.setTail(newTail);
         }
     }
 
     public boolean isGreaterThan(RLnumber number) {
+        int length = (this.getLength() < number.getLength()) ? this.getLength() : number.getLength();
         int[] tail1 = number.getTail();
-        for (int i = 0; i < MAX_LENGTH; i++) {
+        for (int i = 0; i < length; i++) {
             if (tail[i] > tail1[i]) {
                 return true;
             }
@@ -117,42 +129,67 @@ public class RLnumber {
         return (length == 0);
     }
 
+    private static double pow (int number, int power) {
+        double result = 1;
+        if (power >= 0) {
+            for (int i = 0; i < power; i++) {
+                result *= number;
+            }
+        } else {
+            for (int i = power; i < 0; i++) {
+                result /= number;
+            }
+        }
+
+        return result;
+    }
     public static RLnumber toRL(double number) {
         RLnumber result;
         int[] tail = new int[MAX_LENGTH];
+        for (int i = 0; i < tail.length; i++) {
+            tail[i] = EMPTY_VALUE;
+        }
 
         int sign = (number >= 0) ? 0 : 1;
         number = Math.abs(number);
+        double number1 = number;
+        int index = 0;
         for (int k = K_MAX; k > K_MIN; k--) {
-            int index = 0;
-            double number1 = number;
-            number1 = number1 - Math.scalb(1,k);
+            double backup = number1;
+            number1 = number1 - pow(2,k);
+            System.out.println(number1);
             if (number1 < 0) {
-                number1 = number;
-            } else {
+                number1 = backup;
+            } else if (number1 > 0){
                 tail[index] = k;
                 index++;
+            } else {
+                tail[index] = k;
+                break;
             }
-            if (index > MAX_LENGTH) break;
+            if (index >= MAX_LENGTH) break;
         }
 
         result = new RLnumber(sign, tail.length, tail);
+        result.cutRL();
         return result;
     }
 
+// TODO find a mistake.
     public static RLnumber sort(RLnumber number1, RLnumber number2) {
+        number1.cutRL();
+        number2.cutRL();
         RLnumber result;
 
-        int[] resultingTail = new int[2*MAX_LENGTH];
-        Integer[] tempTail = new Integer[2*MAX_LENGTH];
+        int[] resultingTail = new int[number1.getLength() + number2.getLength()];
+        Integer[] tempTail = new Integer[number1.getLength() + number2.getLength()];
         int[] tail1 = number1.getTail();
         int[] tail2 = number2.getTail();
 
-        for (int i = 0; i < resultingTail.length; i++) {
+/*        for (int i = 0; i < resultingTail.length; i++) {
             resultingTail[i] = EMPTY_VALUE;
-        }
-
-        System.arraycopy(tail1, 0, resultingTail, 0, number1.getLength());
+        } */
+        System.arraycopy(tail1,0,resultingTail,0,tail1.length);
         System.arraycopy(tail2, 0, resultingTail, number1.getLength(), number2.getLength());
 
         /* copying content of resultingTail to tempTail */
@@ -221,6 +258,7 @@ public class RLnumber {
 
 
     public static RLnumber substract(RLnumber number1, RLnumber number2) {
+        System.out.println(number1.toString() + " " + number2.toString());
 
         RLnumber greaterNumber;
         RLnumber smallerNumber;
@@ -253,10 +291,14 @@ public class RLnumber {
         greaterNumber.countLength();
         smallerNumber.countLength();
 
+        if (greaterNumber.checkForZero() || smallerNumber.checkForZero()) {
+            return greaterNumber;
+        }
+
         tail1 = greaterNumber.getTail();
         tail2 = greaterNumber.getTail();
         int greatestBitOf1 = tail1[0];
-        int smallestBitOf2 = tail2[smallerNumber.getLength()];
+        int smallestBitOf2 = tail2[smallerNumber.getLength()-1];
         //це List, у якому міститься розклад типу Ni - Nk = N(i-1) N(i-2) ... Nk
         LinkedList<Integer> noIdeaHowToNameThisList = new LinkedList<>();
         for (int i = greatestBitOf1 - 1; i >= smallestBitOf2; i--) {
@@ -279,6 +321,7 @@ public class RLnumber {
     }
 
     public static RLnumber multiply(RLnumber number1, RLnumber number2) {
+
         RLnumber result;
         int signOfResult = number1.getSign() * number2.getSign();
         LinkedList<Integer> partialProductList = new LinkedList<>();
@@ -289,14 +332,21 @@ public class RLnumber {
             for (int j = 0; j < number2.getLength(); j++) {
                 int temp = tail1[i] + tail2[j];
                 partialProductList.add(temp);
+                System.out.print(temp + ".");
             }
         }
+        System.out.println("End of partials");
 
         partialProductArray = new int[partialProductList.size()];
-        result = new RLnumber(signOfResult, 1, partialProductArray);
+        for (int i = 0; i < partialProductArray.length; i++) {
+            partialProductArray[i] = partialProductList.get(i);
+        }
+        result = new RLnumber(signOfResult, partialProductArray.length, partialProductArray);
         result.sort();
         result.mergeSimilar();
         result.countLength();
+        System.out.println("After merge we have this: " + result.toString());
+        result.cutRL();
 
         return result;
 
