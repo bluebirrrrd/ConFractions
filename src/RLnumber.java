@@ -43,6 +43,22 @@ public class RLnumber {
         }
     }
 
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+
+        result.append(sign);
+        result.append(".");
+        result.append(length);
+        result.append(".");
+        for (int i = 0; i < length; i++) {
+            result.append(i);
+            result.append(".");
+        }
+
+        return result.toString();
+    }
+
     public int getSign() {
         return sign;
     }
@@ -67,12 +83,23 @@ public class RLnumber {
         this.tail = tail;
     }
 
-    public void countLength() {
+        public void countLength() {
         length = 0;
         for (int i : tail) {
             if (i > EMPTY_VALUE) {
                 length++;
             }
+        }
+    }
+
+    public void cutRL() {
+        if (length > MAX_LENGTH) {
+            int[] newTail = new int[MAX_LENGTH];
+            for (int i = 0; i < MAX_LENGTH; i++) {
+                newTail[i] = tail[i];
+            }
+            this.setTail(newTail);
+            this.countLength();
         }
     }
 
@@ -85,16 +112,15 @@ public class RLnumber {
         }
         return false;
     }
+
     public boolean checkForZero() {
         return (length == 0);
     }
+
     public static RLnumber toRL(double number) {
         RLnumber result;
         int[] tail = new int[MAX_LENGTH];
-        /*
-        double intPart = Math.floor(number);
-        double fraction = number - intPart;
-        */
+
         int sign = (number >= 0) ? 0 : 1;
         number = Math.abs(number);
         for (int k = K_MAX; k > K_MIN; k--) {
@@ -116,6 +142,7 @@ public class RLnumber {
 
     public static RLnumber sort(RLnumber number1, RLnumber number2) {
         RLnumber result;
+
         int[] resultingTail = new int[2*MAX_LENGTH];
         Integer[] tempTail = new Integer[2*MAX_LENGTH];
         int[] tail1 = number1.getTail();
@@ -162,11 +189,14 @@ public class RLnumber {
     /* TODO check whether the method is working right */
     public void mergeSimilar() {
         this.sort();
-        for (int i = tail.length; i > 0; i--) {
-            if (tail[i] == tail[i-1]) {
-                tail[i-1] = tail[i-1] + 1;
-                tail[i] = EMPTY_VALUE;
-                i--;
+        for (int i = 0; i < tail.length-1; i++) {
+            if (tail[i] == tail[i+1]) {
+                tail[i] = tail[i] + 1;
+                for (int k = i + 1; k < tail.length - 1; k++) {
+                    tail[k] = tail[k + 1];
+                    tail[tail.length - 1] = EMPTY_VALUE;
+                }
+
             }
             if (tail[i] == EMPTY_VALUE) break;
         }
@@ -177,7 +207,6 @@ public class RLnumber {
         RLnumber result;
 
         if ((!number1.checkForZero()) && (!number2.checkForZero())) {
-            int sign = number1.isGreaterThan(number2) ? number1.getSign() : number2.getSign();
             result = sort(number1, number2);
             result.mergeSimilar();
         } else {
