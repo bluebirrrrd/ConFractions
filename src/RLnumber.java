@@ -143,6 +143,8 @@ public class RLnumber {
 
         return result;
     }
+
+    /* works right*/
     public static RLnumber toRL(double number) {
         RLnumber result;
         int[] tail = new int[MAX_LENGTH];
@@ -151,34 +153,37 @@ public class RLnumber {
         }
 
         int sign = (number >= 0) ? 0 : 1;
-        number = Math.abs(number);
-        double number1 = number;
-        int index = 0;
-        for (int k = K_MAX; k > K_MIN; k--) {
-            double backup = number1;
-            number1 = number1 - pow(2,k);
-            System.out.println(number1);
-            if (number1 < 0) {
-                number1 = backup;
-            } else if (number1 > 0){
-                tail[index] = k;
-                index++;
-            } else {
-                tail[index] = k;
-                break;
+        if (number == 0) {
+            result = new RLnumber(0,0,new int[] {-18});
+        } else {
+            number = Math.abs(number);
+            double number1 = number;
+            int index = 0;
+            for (int k = K_MAX; k > K_MIN; k--) {
+                double backup = number1;
+                number1 = number1 - pow(2, k);
+                if (number1 < 0) {
+                    number1 = backup;
+                } else if (number1 > 0) {
+                    tail[index] = k;
+                    index++;
+                } else {
+                    tail[index] = k;
+                    break;
+                }
+                if (index >= MAX_LENGTH) break;
             }
-            if (index >= MAX_LENGTH) break;
-        }
 
-        result = new RLnumber(sign, tail.length, tail);
-        result.cutRL();
+            result = new RLnumber(sign, tail.length, tail);
+            result.cutRL();
+        }
         return result;
     }
 
-// TODO find a mistake.
+    /*works right*/
     public static RLnumber sort(RLnumber number1, RLnumber number2) {
-        number1.cutRL();
-        number2.cutRL();
+        /*number1.cutRL();
+        number2.cutRL();*/
         RLnumber result;
 
         int[] resultingTail = new int[number1.getLength() + number2.getLength()];
@@ -186,9 +191,6 @@ public class RLnumber {
         int[] tail1 = number1.getTail();
         int[] tail2 = number2.getTail();
 
-/*        for (int i = 0; i < resultingTail.length; i++) {
-            resultingTail[i] = EMPTY_VALUE;
-        } */
         System.arraycopy(tail1,0,resultingTail,0,tail1.length);
         System.arraycopy(tail2, 0, resultingTail, number1.getLength(), number2.getLength());
 
@@ -203,10 +205,7 @@ public class RLnumber {
             resultingTail[k] = (int)tempTail[k];
         }
 
-        int[] resultingTail1 = new int[MAX_LENGTH];
-        System.arraycopy(resultingTail, 0, resultingTail1, 0, resultingTail.length);
-
-        result = new RLnumber(number1.getSign(), resultingTail1.length, resultingTail1);
+        result = new RLnumber(number1.getSign(), resultingTail.length, resultingTail);
         return result;
     }
 
@@ -223,16 +222,18 @@ public class RLnumber {
         }
     }
 
-    /* TODO check whether the method is working right */
+    /* works right */
     public void mergeSimilar() {
+
         this.sort();
-        for (int i = 0; i < tail.length-1; i++) {
+
+        for (int i = 0; i < length-1; i++) {
             if (tail[i] == tail[i+1]) {
                 tail[i] = tail[i] + 1;
                 for (int k = i + 1; k < tail.length - 1; k++) {
                     tail[k] = tail[k + 1];
-                    tail[tail.length - 1] = EMPTY_VALUE;
                 }
+                tail[tail.length - 1] = EMPTY_VALUE;
 
             }
             if (tail[i] == EMPTY_VALUE) break;
