@@ -285,9 +285,6 @@ public class RLnumber {
                 resultSign = 1;
             }
 
-            System.out.println("The greater number is " + greaterNumber);
-            System.out.println("The smaller number is " + smallerNumber);
-
             int[] tail1 = greaterNumber.getTail();
             int[] tail2 = smallerNumber.getTail();
 
@@ -338,6 +335,7 @@ public class RLnumber {
         return result;
     }
 
+    /*works right*/
     public static RLnumber multiply(RLnumber number1, RLnumber number2) {
 
         RLnumber result;
@@ -350,10 +348,9 @@ public class RLnumber {
             for (int j = 0; j < number2.getLength(); j++) {
                 int temp = tail1[i] + tail2[j];
                 partialProductList.add(temp);
-                System.out.print(temp + ".");
             }
         }
-        System.out.println("End of partials");
+
 
         partialProductArray = new int[partialProductList.size()];
         for (int i = 0; i < partialProductArray.length; i++) {
@@ -363,7 +360,6 @@ public class RLnumber {
         result.sort();
         result.mergeSimilar();
         result.countLength();
-        System.out.println("After merge we have this: " + result.toString());
         result.cutRL();
 
         return result;

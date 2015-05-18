@@ -89,7 +89,7 @@ public class Application {
         value = scan.nextDouble();
 
         System.out.println(RLnumber.toRL(value).toString());*/
-        System.out.println(RLnumber.substract(RLnumber.toRL(47),RLnumber.toRL(2)).toString());
+        System.out.println(RLnumber.divide(RLnumber.toRL(5),RLnumber.toRL(5)).toString());
 
        /* System.out.println("sin(" + value + ") = " + sin(value).toString());
         System.out.println("cos(" + value + ") = " + cos(value).toString());
