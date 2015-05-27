@@ -251,17 +251,20 @@ public class RLnumber {
     public void mergeSimilar() {
 
         this.sort();
-
-        for (int i = 0; i < length - 1; i++) {
-            if (tail[i] == tail[i + 1]) {
-                tail[i] = tail[i] + 1;
-                for (int k = i + 1; k < tail.length - 1; k++) {
-                    tail[k] = tail[k + 1];
+        boolean isReplaced = true;
+        while (isReplaced) {
+            isReplaced = false;
+            for (int i = 0; i < length - 1; i++) {
+                if (tail[i] == tail[i + 1] && (tail[i] != EMPTY_VALUE)) {
+                    tail[i] = tail[i] + 1;
+                    for (int k = i + 1; k < tail.length - 1; k++) {
+                        tail[k] = tail[k + 1];
+                    }
+                    tail[tail.length - 1] = EMPTY_VALUE;
+                    isReplaced = true;
                 }
-                tail[tail.length - 1] = EMPTY_VALUE;
-
+                if (tail[i] == EMPTY_VALUE) break;
             }
-            if (tail[i] == EMPTY_VALUE) break;
         }
         this.countLength();
     }
@@ -310,7 +313,7 @@ public class RLnumber {
     /* works right */
     public static RLnumber substract(RLnumber number1, RLnumber number2) {
 
-        System.out.println(number1 + " minus " + number2);
+       // System.out.println(number1 + " minus " + number2);
 
          if (number1.checkForZero()) {
              if (number2.getSign() == 0) {
@@ -341,15 +344,12 @@ public class RLnumber {
             result = sum (number1,number2);
             return result;
         }
-           number1.deleteIdentical(number2);
 
+        number1.deleteIdentical(number2);
+        //System.out.println("Removed similar. We have " + number1 + " minus " + number2);
             if (number1.checkForZero()) {
-                if (number2.getSign() == 0) {
-                    number2.setSign(1);
-                } else {
-                    number2.setSign(0);
-                }
                 result = number2;
+                result.setSign(1);
                 return result;
             }
             if (number2.checkForZero()) {
@@ -361,11 +361,11 @@ public class RLnumber {
                 int maxValue;
                 int minValue;
 
-
                 if (number1.getTail()[0] > number2.getTail()[0]) {
                    result.setSign(0);
                 } else {
                     result = substract(number2,number1);
+                    return result;
                 }
 
                 maxValue = number1.getTail()[0];
@@ -374,17 +374,38 @@ public class RLnumber {
                 for (int i = maxValue - 1; i >= minValue; i--) {
                     noIdeaHowToNameThisList.add(i);
                 }
-                int[] newBiggerTail = new int[noIdeaHowToNameThisList.size() + number1.length];
+           //     System.out.println("NoIdeaHowTONameThisList: " + noIdeaHowToNameThisList.toString());
+                int[] newBiggerTail = new int[noIdeaHowToNameThisList.size() + number1.getLength()-1];
+       // System.out.println("The length of NewBiggerTail:" + newBiggerTail.length);
                 for (int i = 0; i < noIdeaHowToNameThisList.size(); i++) {
                     newBiggerTail[i] = noIdeaHowToNameThisList.get(i);
                 }
-                System.arraycopy(number1.getTail(), 1, newBiggerTail, noIdeaHowToNameThisList.size(), number1.length - 1);
+        int listSize = noIdeaHowToNameThisList.size();
+                for (int j = 1; j < number1.length; j++) {
+                    newBiggerTail[listSize + j - 1] = number1.getTail()[j];
+                }
 
-                number1.setTail(newBiggerTail);
+        number1.setTail(newBiggerTail);
+        number1.countLength();
+        if ((number2.getLength() - 1) == 0) {
+
+            number1.sort();
+            number1.mergeSimilar();
+            number1.cutRL();
+            result = number1;
+            return result;
+        }
+
+        int[] tail2 = new int[number2.getLength()-1];
+        for (int i = 0; i < tail2.length; i++) {
+            tail2[i] = number2.getTail()[i];
+        }
+        number2.setTail(tail2);
+        number2.countLength();
+        number2.cutRL();
 
                 number1.deleteIdentical(number2);
                 number1.mergeSimilar();
-                number1.countLength();
                 number1.cutRL();
 
                 result = number1;
@@ -439,13 +460,13 @@ public class RLnumber {
                 tailOfResult[j] = EMPTY_VALUE;
             }
             for (int i = 0; i < MAX_LENGTH; i++) {
-                System.out.println("Loop #" + i);
-                System.out.println("tempNumber is " + tempNumber);
+               /* System.out.println("Loop #" + i);
+                System.out.println("tempNumber is " + tempNumber);*/
                 tailOfResult[i] = tempNumber.getTail()[0] - divisorHeadBit;
 
                 RLnumber temp = new RLnumber(signOfResult, 1, new int[] {tailOfResult[i]}); //temporal part of fraction (the one that we are checking)
                 RLnumber product = multiply(temp, divisor);
-                System.out.println("Multiplied " + temp + " with " + divisor + ", and we have " + product);
+              //  System.out.println("Multiplied " + temp + " with " + divisor + ", and we have " + product);
                 RLnumber remainder;
 /*
                 if (product.isGreaterThan(tempNumber)) {
