@@ -85,15 +85,17 @@ public class Application {
         java.util.Scanner scan = new Scanner(System.in);
         double value;
 
-       /* System.out.print("Enter the value: ");
+       System.out.print("Enter the value: ");
         value = scan.nextDouble();
 
-        System.out.println(RLnumber.toRL(value).toString());*/
-        System.out.println(RLnumber.divide(RLnumber.toRL(5),RLnumber.toRL(5)).toString());
+       // System.out.println(RLnumber.toRL(value).toString());
+       // System.out.println(RLnumber.substract(RLnumber.toRL(45), RLnumber.toRL(30)));
 
-       /* System.out.println("sin(" + value + ") = " + sin(value).toString());
+       // System.out.println(RLnumber.substract(RLnumber.toRL(45), RLnumber.toRL(5)).toString());
+
+      /*  System.out.println("sin(" + value + ") = " + sin(value).toString());
         System.out.println("cos(" + value + ") = " + cos(value).toString());
         System.out.println("tan(" + value + ") = " + tan(value).toString());
-        System.out.println("sec(" + value + ") = " + sec(value).toString()); */
+        System.out.println("sec(" + value + ") = " + sec(value).toString());*/
     }
 }
