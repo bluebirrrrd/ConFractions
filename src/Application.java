@@ -52,6 +52,16 @@ public class Application {
         return result;
     }
 
+    public static double sinn(double value) {
+        double r = -value * value;
+        double s = 4 * CONVERGENCE + 2;
+        for (int k = CONVERGENCE; k > 0; k--) {
+            s = 4 * k - 2 + r/s;
+        }
+        double t = 2 * value * s/(s*s - r);
+        return t;
+    }
+
     public static RLnumber cos(double value) {
         RLnumber r, s, result;
         r = countR(value);
@@ -64,6 +74,16 @@ public class Application {
         return result;
     }
 
+    public static double coss(double value) {
+        double r = -value * value;
+        double s = 4 * CONVERGENCE + 2;
+        for (int k = CONVERGENCE; k > 0; k--) {
+            s = 4 * k - 2 + r/s;
+        }
+        double t = (s * s + r)/(s*s - r);
+        return t;
+
+    }
     public static RLnumber tan(double value) {
         RLnumber rlValue = RLnumber.toRL(value);
         RLnumber r, s, result;
@@ -77,8 +97,21 @@ public class Application {
         return result;
     }
 
+    public static double tann(double value) {
+        double r = -value * value;
+        double s = 4 * CONVERGENCE + 2;
+        for (int k = CONVERGENCE; k > 0; k--) {
+            s = 4 * k - 2 + r/s;
+        }
+        double t = 2 * value * s/(s*s + r);
+        return t;
+    }
     public static RLnumber sec(double value) {
         return RLnumber.divide(RLnumber.toRL(1), cos(value));
+    }
+
+    public static double secc(double value) {
+        return (1/coss(value));
     }
 
     public static void main(String[] args) {
@@ -96,9 +129,15 @@ public class Application {
 
        // System.out.println(RLnumber.substract(RLnumber.toRL(45), RLnumber.toRL(5)).toString());
 
-       System.out.println("sin(" + value + ") = " + sin(value).toString());
-       /* System.out.println("cos(" + value + ") = " + cos(value).toString());
+    /*   System.out.println("sin(" + value + ") = " + sin(value).toString() + " = " + sin(value).toDouble());
+        System.out.println("cos(" + value + ") = " + cos(value).toString());
         System.out.println("tan(" + value + ") = " + tan(value).toString());
-        System.out.println("sec(" + value + ") = " + sec(value).toString());*/
+        System.out.println("sec(" + value + ") = " + sec(value).toString());
+*/
+
+        System.out.println("sin(" + value + ") = " + RLnumber.toRL(sinn(value)) + " = " + sinn(value));
+        System.out.println("cos(" + value + ") = " + RLnumber.toRL(coss(value)) + " = " + coss(value));
+        System.out.println("tan(" + value + ") = " + RLnumber.toRL(tann(value)) + " = " + tann(value));
+        System.out.println("sec(" + value + ") = " + RLnumber.toRL(secc(value)) + " = " + secc(value));
     }
 }

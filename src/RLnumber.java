@@ -118,6 +118,13 @@ public class RLnumber {
         }
     }
 
+    public double toDouble() {
+        double result = 0;
+        for (int i : tail) {
+            result += Math.pow(2,i);
+        }
+        return result;
+    }
     /*public boolean isGreaterThan(RLnumber number) {
 
        /* boolean result = false;
@@ -449,9 +456,15 @@ public class RLnumber {
         RLnumber result;
         if (divisor.checkForZero()) {
             result = divisor;
-        } else if (dividend.checkForZero()) {
+            return result;
+        }
+
+        if (dividend.checkForZero() | (dividend.getTail() == new int[]{0})) {
             result = dividend;
-        } else {
+            return result;
+        }
+
+
             RLnumber tempNumber = dividend;
             int divisorHeadBit = divisor.getTail()[0];
             int signOfResult = dividend.getSign() * divisor.getSign();
@@ -483,7 +496,7 @@ public class RLnumber {
             result = new RLnumber(signOfResult, MAX_LENGTH, tailOfResult);
 
             result.cutRL();
-        }
+
         return result;
     }
 
